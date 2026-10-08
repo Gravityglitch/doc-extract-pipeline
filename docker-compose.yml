@@ -1,0 +1,63 @@
+services:
+  # Postgres database backing the pipeline.
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: docpipe
+      POSTGRES_PASSWORD: docpipe
+      POSTGRES_DB: docpipe
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docpipe -d docpipe"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-shot: apply Alembic migrations before the app starts.
+  migrate:
+    build: .
+    command: alembic upgrade head
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://docpipe:docpipe@db:5432/docpipe
+
+  # Long-running pipeline loop.
+  runner:
+    build: .
+    command: docpipe loop
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://docpipe:docpipe@db:5432/docpipe
+      DOCPIPE_RUN_INTERVAL_SECONDS: ${DOCPIPE_RUN_INTERVAL_SECONDS:-300}
+    volumes:
+      - ./inbox:/app/inbox
+      - ./data:/app/data
+      - ./out:/app/out
+    restart: unless-stopped
+
+  # HTTP API served by uvicorn.
+  api:
+    build: .
+    command: docpipe api
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "${DOCPIPE_API_PORT:-8000}:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://docpipe:docpipe@db:5432/docpipe
+    restart: unless-stopped
+
+volumes:
+  pgdata:

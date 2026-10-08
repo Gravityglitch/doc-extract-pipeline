@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from enum import StrEnum
 from typing import Literal
 
@@ -13,6 +13,23 @@ class DocType(StrEnum):
     INVOICE = "invoice"
     RECEIPT = "receipt"
     OTHER = "other"
+    UNKNOWN = "unknown"  # extraction failed before the document could be classified
+
+
+class DocStatus(StrEnum):
+    PROCESSED = "processed"  # extracted, validated, reconciled; may still need review
+    FAILED = "failed"  # an exception was raised while processing; see `error`
+    APPROVED = "approved"  # a reviewer accepted the extraction
+    REJECTED = "rejected"  # a reviewer rejected it (wrong fields, not an invoice, ...)
+
+
+class ReviewDecision(BaseModel):
+    """A human decision recorded through the review API."""
+
+    decision: Literal["approved", "rejected"]
+    reviewer: str
+    note: str = ""
+    decided_at: datetime
 
 
 class LineItem(BaseModel):
@@ -74,11 +91,13 @@ class Reconciliation(BaseModel):
 
 
 class ProcessedDocument(BaseModel):
-    """One row of out/extracted.jsonl."""
+    """One document's full result: one row of out/extracted.jsonl and the unit the
+    review API serves. `id` is assigned by the store."""
 
+    id: int | None = None
     source_file: str
     sha256: str
-    extraction_method: Literal["text", "vision", "fixture"]
+    extraction_method: Literal["text", "vision", "fixture", "none"]
     doc_type: DocType
     confidence: float
     invoice: Invoice | None
@@ -86,6 +105,11 @@ class ProcessedDocument(BaseModel):
     needs_review: bool = False
     reconciliation: Reconciliation | None = None
     processed_on: date
+    status: DocStatus = DocStatus.PROCESSED
+    error: str | None = None
+    run_id: str | None = None
+    notes: str = ""
+    decisions: list[ReviewDecision] = Field(default_factory=list)
 
 
 class LedgerEntry(BaseModel):

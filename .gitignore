@@ -6,3 +6,7 @@ out/*.db
 .pytest_cache/
 .ruff_cache/
 dist/
+
+.coverage
+htmlcov/
+out/mail_archive/

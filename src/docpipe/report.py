@@ -7,7 +7,7 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 
-from docpipe.models import DocType, ProcessedDocument, ReconStatus
+from docpipe.models import DocStatus, DocType, ProcessedDocument, ReconStatus
 
 EXCEPTION_STATUSES = {
     ReconStatus.OVERDUE,
@@ -18,9 +18,53 @@ EXCEPTION_STATUSES = {
 }
 
 
+EXCEPTION_COLUMNS = [
+    "id",
+    "source_file",
+    "status",
+    "vendor",
+    "invoice_number",
+    "total",
+    "recon_status",
+    "needs_review",
+    "issues",
+    "detail",
+]
+
+
 def is_exception(doc: ProcessedDocument) -> bool:
+    """Anything a human should look at: failed, flagged for review, or a reconciliation
+    status that is not a plain paid/unpaid."""
+    if doc.status == DocStatus.FAILED:
+        return True
+    if doc.status in (DocStatus.APPROVED, DocStatus.REJECTED):
+        return False
     recon_flag = doc.reconciliation is not None and doc.reconciliation.status in EXCEPTION_STATUSES
     return doc.needs_review or recon_flag
+
+
+def exception_rows(docs: list[ProcessedDocument]) -> list[list[str]]:
+    """Header + one row per exception, as plain strings (CSV and Sheets share this)."""
+    rows = [EXCEPTION_COLUMNS]
+    for d in docs:
+        if not is_exception(d):
+            continue
+        inv = d.invoice
+        rows.append(
+            [
+                str(d.id) if d.id is not None else "",
+                d.source_file,
+                d.status.value,
+                inv.vendor if inv else "",
+                inv.invoice_number if inv else "",
+                f"{inv.total:.2f}" if inv else "",
+                d.reconciliation.status.value if d.reconciliation else "",
+                "yes" if d.needs_review else "no",
+                "; ".join(i.code for i in d.issues),
+                d.error or (d.reconciliation.detail if d.reconciliation else ""),
+            ]
+        )
+    return rows
 
 
 def write_jsonl(docs: list[ProcessedDocument], path: Path) -> None:
@@ -33,35 +77,7 @@ def write_jsonl(docs: list[ProcessedDocument], path: Path) -> None:
 def write_exceptions_csv(docs: list[ProcessedDocument], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(
-            [
-                "source_file",
-                "vendor",
-                "invoice_number",
-                "total",
-                "recon_status",
-                "needs_review",
-                "issues",
-                "detail",
-            ]
-        )
-        for d in docs:
-            if not is_exception(d):
-                continue
-            inv = d.invoice
-            w.writerow(
-                [
-                    d.source_file,
-                    inv.vendor if inv else "",
-                    inv.invoice_number if inv else "",
-                    f"{inv.total:.2f}" if inv else "",
-                    d.reconciliation.status.value if d.reconciliation else "",
-                    "yes" if d.needs_review else "no",
-                    "; ".join(i.code for i in d.issues),
-                    d.reconciliation.detail if d.reconciliation else "",
-                ]
-            )
+        csv.writer(f).writerows(exception_rows(docs))
 
 
 def _money(amount: float, currency: str = "USD") -> str:
@@ -78,8 +94,9 @@ def build_briefing(docs: list[ProcessedDocument], as_of: date) -> str:
         and d.reconciliation.status
         in (ReconStatus.UNPAID, ReconStatus.OVERDUE, ReconStatus.PARTIALLY_PAID)
     )
-    review_queue = [d for d in docs if d.needs_review]
-    exceptions = [d for d in docs if is_exception(d)]
+    review_queue = [d for d in docs if d.needs_review and d.status == DocStatus.PROCESSED]
+    failed = [d for d in docs if d.status == DocStatus.FAILED]
+    exceptions = [d for d in docs if is_exception(d) and d.status != DocStatus.FAILED]
 
     lines = [
         f"# Daily AP briefing - {as_of.isoformat()}",
@@ -87,7 +104,8 @@ def build_briefing(docs: list[ProcessedDocument], as_of: date) -> str:
         f"Processed **{len(docs)}** documents: "
         f"{sum(d.doc_type == DocType.INVOICE for d in docs)} invoices, "
         f"{sum(d.doc_type == DocType.RECEIPT for d in docs)} receipts, "
-        f"{sum(d.doc_type == DocType.OTHER for d in docs)} other.",
+        f"{sum(d.doc_type == DocType.OTHER for d in docs)} other"
+        + (f", {len(failed)} failed." if failed else "."),
         "",
         "## Payment status",
         "",
@@ -121,6 +139,11 @@ def build_briefing(docs: list[ProcessedDocument], as_of: date) -> str:
                 f"{d.reconciliation.status.value if d.reconciliation else '-'} | {why} |"
             )
 
+    if failed:
+        lines += ["", f"## Failed ({len(failed)} - fix and re-run)", ""]
+        for d in failed:
+            lines.append(f"- `{d.source_file}` - {d.error}")
+
     lines += ["", f"## Approval queue ({len(review_queue)} awaiting human review)", ""]
     if not review_queue:
         lines.append("Empty.")
@@ -135,9 +158,10 @@ def build_briefing(docs: list[ProcessedDocument], as_of: date) -> str:
     for d in clean:
         inv = d.invoice
         assert inv is not None
+        reviewed = f" ({d.status.value})" if d.status != DocStatus.PROCESSED else ""
         lines.append(
             f"- {inv.vendor} {inv.invoice_number} - {_money(inv.total, inv.currency)} - "
-            f"{d.reconciliation.status.value if d.reconciliation else 'n/a'}"
+            f"{d.reconciliation.status.value if d.reconciliation else 'n/a'}{reviewed}"
         )
     return "\n".join(lines) + "\n"
 
