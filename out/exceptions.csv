@@ -1,0 +1,8 @@
+source_file,vendor,invoice_number,total,recon_status,needs_review,issues,detail
+email_brightway_inv_1009.txt,Brightway Uniforms,INV-1009,360.00,overdue,no,,"Unpaid, due 2026-09-19 (19 days ago)"
+inv_1002_metro_janitorial.pdf,Metro Janitorial Wholesale,INV-1002,462.00,unpaid,yes,missing_po,No payment found
+inv_1002_metro_janitorial_resend.pdf,Metro Janitorial Wholesale,INV-1002,462.00,duplicate,yes,missing_po,INV-1002 from Metro Janitorial Wholesale was already processed
+inv_1003_brightway_uniforms.pdf,Brightway Uniforms,INV-1003,480.00,overpaid,no,,Overpaid by 60.00
+inv_1005_northwind_equipment.pdf,Northwind Equipment Hire,INV-1005,1180.00,unpaid,yes,totals_mismatch,No payment found; PO PO-5005 is for 1080.00
+inv_1007_acme_pest.pdf,Acme Pest Control,INV-1007,385.00,unknown_vendor,no,,'Acme Pest Control' not in purchase orders or ledger
+inv_1008_sparkleclean.pdf,SparkleClean Supplies Ltd,INV-1008,1650.00,partially_paid,no,,Outstanding 650.00 of 1650.00

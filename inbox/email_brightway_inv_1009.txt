@@ -1,0 +1,27 @@
+From: Dana Cole <accounts@brightway.example.com>
+To: ap@gleamandgo.example.com
+Date: Wed, 20 Aug 2026 09:14:00 +0000
+Subject: Invoice INV-1009 - Hi-vis jackets (PO PO-5009)
+
+Hi team,
+
+Please find below the details for your recent order. The PDF was too large for our
+mail gateway so I've pasted the invoice in the body.
+
+Brightway Uniforms
+Invoice number: INV-1009
+Invoice date: 2026-08-20
+Due date: 2026-09-19
+Your PO: PO-5009
+
+Items
+- Hi-vis jackets x 6 @ 60.00 = 360.00
+
+Subtotal: 360.00
+Tax: 0.00
+Total due: 360.00 USD
+
+Bank: Springfield Mutual, acct 12345678, ref INV-1009
+
+Thanks,
+Dana

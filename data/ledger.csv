@@ -1,0 +1,6 @@
+payment_id,date,vendor,invoice_number,amount,method
+PAY-001,2026-09-28,SparkleClean Supplies Ltd,INV-1001,1100.0,bank_transfer
+PAY-002,2026-09-30,Brightway Uniforms,INV-1003,540.0,bank_transfer
+PAY-003,2026-10-02,QuickFuel Station,RCPT-2201,74.71,card
+PAY-004,2026-10-05,SparkleClean Supplies Ltd,INV-1008,1000.0,bank_transfer
+PAY-005,2026-09-12,Northwind Equipment Hire,INV-0991,450.0,bank_transfer

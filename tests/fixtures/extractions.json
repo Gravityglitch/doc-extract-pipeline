@@ -1,0 +1,254 @@
+{
+  "inv_1001_sparkleclean.pdf": {
+    "doc_type": "invoice",
+    "confidence": 0.97,
+    "invoice": {
+      "vendor": "SparkleClean Supplies Ltd",
+      "invoice_number": "INV-1001",
+      "date": "2026-09-10",
+      "due_date": "2026-10-10",
+      "line_items": [
+        {
+          "description": "Microfibre cloths (pack of 10)",
+          "quantity": 50,
+          "unit_price": 4.0,
+          "amount": 200.0
+        },
+        {
+          "description": "Floor cleaner concentrate 5L",
+          "quantity": 20,
+          "unit_price": 25.0,
+          "amount": 500.0
+        },
+        {
+          "description": "Heavy-duty bin liners (roll)",
+          "quantity": 10,
+          "unit_price": 30.0,
+          "amount": 300.0
+        }
+      ],
+      "subtotal": 1000.0,
+      "tax": 100.0,
+      "total": 1100.0,
+      "currency": "USD",
+      "po_number": "PO-5001"
+    },
+    "notes": "Clean invoice, paid in full."
+  },
+  "inv_1002_metro_janitorial.pdf": {
+    "doc_type": "invoice",
+    "confidence": 0.93,
+    "invoice": {
+      "vendor": "Metro Janitorial Wholesale",
+      "invoice_number": "INV-1002",
+      "date": "2026-09-25",
+      "due_date": "2026-10-25",
+      "line_items": [
+        {
+          "description": "Industrial vacuum bags (box)",
+          "quantity": 4,
+          "unit_price": 45.0,
+          "amount": 180.0
+        },
+        {
+          "description": "Commercial mop system",
+          "quantity": 2,
+          "unit_price": 120.0,
+          "amount": 240.0
+        }
+      ],
+      "subtotal": 420.0,
+      "tax": 42.0,
+      "total": 462.0,
+      "currency": "USD",
+      "po_number": null
+    },
+    "notes": "EDGE CASE: no PO number printed."
+  },
+  "inv_1003_brightway_uniforms.pdf": {
+    "doc_type": "invoice",
+    "confidence": 0.96,
+    "invoice": {
+      "vendor": "Brightway Uniforms",
+      "invoice_number": "INV-1003",
+      "date": "2026-09-15",
+      "due_date": "2026-10-15",
+      "line_items": [
+        {
+          "description": "Embroidered polo shirts",
+          "quantity": 12,
+          "unit_price": 40.0,
+          "amount": 480.0
+        }
+      ],
+      "subtotal": 480.0,
+      "tax": 0.0,
+      "total": 480.0,
+      "currency": "USD",
+      "po_number": "PO-5003"
+    },
+    "notes": "EDGE CASE: ledger shows 540.00 paid against a 480.00 invoice (overpaid)."
+  },
+  "inv_1002_metro_janitorial_resend.pdf": {
+    "doc_type": "invoice",
+    "confidence": 0.92,
+    "invoice": {
+      "vendor": "Metro Janitorial Wholesale",
+      "invoice_number": "INV-1002",
+      "date": "2026-09-25",
+      "due_date": "2026-10-25",
+      "line_items": [
+        {
+          "description": "Industrial vacuum bags (box)",
+          "quantity": 4,
+          "unit_price": 45.0,
+          "amount": 180.0
+        },
+        {
+          "description": "Commercial mop system",
+          "quantity": 2,
+          "unit_price": 120.0,
+          "amount": 240.0
+        }
+      ],
+      "subtotal": 420.0,
+      "tax": 42.0,
+      "total": 462.0,
+      "currency": "USD",
+      "po_number": null
+    },
+    "notes": "EDGE CASE: duplicate of INV-1002 re-sent as a reminder."
+  },
+  "inv_1005_northwind_equipment.pdf": {
+    "doc_type": "invoice",
+    "confidence": 0.9,
+    "invoice": {
+      "vendor": "Northwind Equipment Hire",
+      "invoice_number": "INV-1005",
+      "date": "2026-09-28",
+      "due_date": "2026-10-12",
+      "line_items": [
+        {
+          "description": "Scrubber-dryer hire (2 weeks)",
+          "quantity": 1,
+          "unit_price": 900.0,
+          "amount": 900.0
+        }
+      ],
+      "subtotal": 900.0,
+      "tax": 180.0,
+      "total": 1180.0,
+      "currency": "USD",
+      "po_number": "PO-5005"
+    },
+    "notes": "EDGE CASE: printed total 1180.00 but 900 + 180 tax = 1080 (amount mismatch)."
+  },
+  "rcpt_2201_quickfuel.pdf": {
+    "doc_type": "receipt",
+    "confidence": 0.95,
+    "invoice": {
+      "vendor": "QuickFuel Station",
+      "invoice_number": "RCPT-2201",
+      "date": "2026-10-02",
+      "due_date": null,
+      "line_items": [
+        {
+          "description": "Diesel 48.2 L",
+          "quantity": 1,
+          "unit_price": 74.71,
+          "amount": 74.71
+        }
+      ],
+      "subtotal": 74.71,
+      "tax": 0.0,
+      "total": 74.71,
+      "currency": "USD",
+      "po_number": null
+    },
+    "notes": "Card receipt, matched to ledger card payment."
+  },
+  "inv_1007_acme_pest.pdf": {
+    "doc_type": "invoice",
+    "confidence": 0.94,
+    "invoice": {
+      "vendor": "Acme Pest Control",
+      "invoice_number": "INV-1007",
+      "date": "2026-09-30",
+      "due_date": "2026-10-30",
+      "line_items": [
+        {
+          "description": "Quarterly pest treatment - 3 sites",
+          "quantity": 1,
+          "unit_price": 350.0,
+          "amount": 350.0
+        }
+      ],
+      "subtotal": 350.0,
+      "tax": 35.0,
+      "total": 385.0,
+      "currency": "USD",
+      "po_number": "PO-9999"
+    },
+    "notes": "EDGE CASE: vendor not in PO list or ledger; cites a PO that does not exist."
+  },
+  "inv_1008_sparkleclean.pdf": {
+    "doc_type": "invoice",
+    "confidence": 0.97,
+    "invoice": {
+      "vendor": "SparkleClean Supplies Ltd",
+      "invoice_number": "INV-1008",
+      "date": "2026-09-20",
+      "due_date": "2026-10-20",
+      "line_items": [
+        {
+          "description": "Hand soap refill 1L",
+          "quantity": 100,
+          "unit_price": 6.0,
+          "amount": 600.0
+        },
+        {
+          "description": "Paper towels (case)",
+          "quantity": 30,
+          "unit_price": 30.0,
+          "amount": 900.0
+        }
+      ],
+      "subtotal": 1500.0,
+      "tax": 150.0,
+      "total": 1650.0,
+      "currency": "USD",
+      "po_number": "PO-5008"
+    },
+    "notes": "EDGE CASE: partially paid (1000.00 of 1650.00)."
+  },
+  "email_brightway_inv_1009.txt": {
+    "doc_type": "invoice",
+    "confidence": 0.91,
+    "invoice": {
+      "vendor": "Brightway Uniforms",
+      "invoice_number": "INV-1009",
+      "date": "2026-08-20",
+      "due_date": "2026-09-19",
+      "line_items": [
+        {
+          "description": "Hi-vis jackets",
+          "quantity": 6,
+          "unit_price": 60.0,
+          "amount": 360.0
+        }
+      ],
+      "subtotal": 360.0,
+      "tax": 0.0,
+      "total": 360.0,
+      "currency": "USD",
+      "po_number": "PO-5009"
+    },
+    "notes": "Invoice sent in an email body; overdue as of 2026-10-08."
+  },
+  "email_newsletter.txt": {
+    "doc_type": "other",
+    "confidence": 0.98,
+    "invoice": null,
+    "notes": "Supplier newsletter - should be classified `other` and skipped."
+  }
+}
